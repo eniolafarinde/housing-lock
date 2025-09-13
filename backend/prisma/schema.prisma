@@ -13,3 +13,30 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Resident {
+  id              String    @id @default(cuid())
+  studentId       String    @unique
+  firstName       String
+  lastName        String
+  hall            String?
+  room            String?
+  lockoutCount    Int       @default(0)
+  firstLockoutAt  DateTime?
+  lastLockoutAt   DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  lockouts        Lockout[]
+}
+
+model Lockout {
+  id         String   @id @default(cuid())
+  resident   Resident @relation(fields: [residentId], references: [id])
+  residentId String
+  timestamp  DateTime @default(now())
+  raName     String
+  notes      String?
+  hall       String?
+  room       String?
+  paid       Boolean  @default(false)
+}
